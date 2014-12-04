@@ -3,6 +3,8 @@
 
 Run any customized application from command palette. Just Ctrl/Command+Shift+P, input `Run: XXX`, that's it!
 
+![effect](./imgs/screenshot.png)
+
 ## Installation Instructions
 
 **Package Installer**
@@ -33,7 +35,7 @@ Each application follows:
           // argument list
           "args": [""], 
 
-          // define which should follow the command:
+          // define what should follow the command:
           // "dir" - file directory 
           // "file" - file name
           // "proj" - project directory
@@ -44,7 +46,8 @@ Each application follows:
 ```
 
 Take "Git bash on windows" as an example, the original command is:
-`C:/Windows/system32/wscript D:/Tools/Git/Git Bash.vbs <directory>`
+
+`C:/Windows/system32/wscript "D:/Tools/Git/Git Bash.vbs" <directory>`
 
 ```json
     {
