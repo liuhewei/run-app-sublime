@@ -19,7 +19,7 @@ Run any customized application from command palette. Just Ctrl/Command+Shift+P, 
     ```
 
 ## Usage
-Firstly, add applications through: "Preferences" -> "Package Settings" -> "Run App" -> "Add Application". 
+Firstly, add applications through: "Tools" -> "Run Apps" -> "Add Application". 
 
 Each application follows:
 ```

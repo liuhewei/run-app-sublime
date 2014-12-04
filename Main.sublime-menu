@@ -1,23 +1,16 @@
 [
     {
-        "id": "preferences",
+        "id": "tools",
         "children":
         [
             {
-                "caption": "Package Settings",
-                "id": "package-settings",
+                "caption": "Run Apps",
+                "id": "run-apps",
                 "children":
                 [
                     {
-                        "caption": "Run App",
-                        "children":
-                        [
-                            {
-                                "caption": "Add Application",
-                                "command": "addapp"
-                                
-                            }
-                        ]
+                        "caption": "Add Application",
+                        "command": "addapp"
                     }
                 ]
             }
