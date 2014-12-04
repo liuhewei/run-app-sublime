@@ -1,7 +1,7 @@
 
 # Run applications - Sublime Text
 
-Run any customized application from command palette. Just Ctrl/Command+Shift+P, input Run XXX, that's it.
+Run any customized application from command palette. Just Ctrl/Command+Shift+P, input `Run: XXX`, that's it!
 
 ## Installation Instructions
 
@@ -19,26 +19,39 @@ Run any customized application from command palette. Just Ctrl/Command+Shift+P, 
     ```
 
 ## Usage
-Preferences -> Package Settings -> Run App -> Add Application. Each application follows:
-```json
-    // Git bash on windows as an example, the original command is:
-    // C:\\Windows\\system32\\wscript D:\\Tools\\Git\\Git Bash.vbs <directory>
+Firstly, add applications through: "Preferences" -> "Package Settings" -> "Run App" -> "Add Application". 
+Each application follows:
+```
     {
-        "caption": "Run: Git",
-        "command": "runapp",
+        "caption": "Run: Git",  // cannot be changed
+        "command": "runapp",    // cannot be changed
         "args":{
-          // application full path on Win/Linux, or name on MAC
-          "app": "C:\\Windows\\system32\\wscript",  
+          // application full path on Win/Linux, or only name on MAC
+          "app": "",  
 
-          // argument list, each one is a string
-          "args": ["D:\\Tools\\Git\\Git Bash.vbs"],
+          // argument list
+          "args": [""], 
 
           // define which should follow the command:
           // "dir" - file directory 
           // "file" - file name
           // "proj" - project directory
           // "none" - nothing 
-          "type": "dir"
+          "type": ""  
+        }
+    }
+```
+Take "Git bash on windows" as an example, the original command is:
+`C:/Windows/system32/wscript D:/Tools/Git/Git Bash.vbs <directory>`
+
+```json
+    {
+        "caption": "Run: Git",
+        "command": "runapp",
+        "args":{
+          "app": "C:\\Windows\\system32\\wscript",  
+          "args": ["D:\\Tools\\Git\\Git Bash.vbs"], 
+          "type": "proj"
         }
     }
 ```
