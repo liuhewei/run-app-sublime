@@ -20,6 +20,7 @@ Run any customized application from command palette. Just Ctrl/Command+Shift+P, 
 
 ## Usage
 Firstly, add applications through: "Preferences" -> "Package Settings" -> "Run App" -> "Add Application". 
+
 Each application follows:
 ```
     {
@@ -41,6 +42,7 @@ Each application follows:
         }
     }
 ```
+
 Take "Git bash on windows" as an example, the original command is:
 `C:/Windows/system32/wscript D:/Tools/Git/Git Bash.vbs <directory>`
 
