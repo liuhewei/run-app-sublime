@@ -11,7 +11,7 @@ Run any customized application from command palette. Just Ctrl/Command+Shift+P, 
 
 * Install [Sublime Package Control](http://wbond.net/sublime_packages/package_control)
 * Select "Package Control: Install Package" from the Command Palette (`super/ctrl+shift+p`)
-* Find "Run App" and select
+* Find "Run Apps" and select
 
 **Git clone**
 * Enter directory through "Browse Packages..." in Sublime Text "Preferences"
@@ -26,7 +26,7 @@ Firstly, add applications through: "Tools" -> "Run Apps" -> "Add Application".
 Each application follows:
 ```
     {
-        "caption": "Run: Git",  // cannot be changed
+        "caption": "Run: Git",  // Run: <App-name>, shown in command pallete
         "command": "runapp",    // cannot be changed
         "args":{
           // application full path on Win/Linux, or only name on MAC
