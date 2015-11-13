@@ -21,7 +21,7 @@ Run any customized application from command palette. Just Ctrl/Command+Shift+P, 
     ```
 
 ## Usage
-Firstly, add applications through: "Tools" -> "Run Apps" -> "Add Application". 
+Firstly, add applications through: "Tools" -> "Run Apps" -> "Add Application".
 
 Each application follows:
 ```
@@ -30,17 +30,18 @@ Each application follows:
         "command": "runapp",    // cannot be changed
         "args":{
           // application full path on Win/Linux, or only name on MAC
-          "app": "",  
+          "app": "",
 
           // argument list
-          "args": [""], 
+          // variables can be use: $DIR$, $FILE$, $PROJ$
+          "args": [""],
 
           // define what should follow the command:
-          // "dir" - file directory 
-          // "file" - file name
-          // "proj" - project directory
-          // "none" - nothing 
-          "type": ""  
+          // "dir" - file directory, same as $DIR$
+          // "file" - file name, same as $FILE$
+          // "proj" - project directory, same as $PROJ$
+          // "none" - nothing: if args use variables, "type" must be "none"
+          "type": ""
         }
     }
 ```
@@ -54,8 +55,8 @@ Take "Git bash on windows" as an example, the original command is:
         "caption": "Run: Git",
         "command": "runapp",
         "args":{
-          "app": "C:\\Windows\\system32\\wscript",  
-          "args": ["D:\\Tools\\Git\\Git Bash.vbs"], 
+          "app": "C:\\Windows\\system32\\wscript",
+          "args": ["D:\\Tools\\Git\\Git Bash.vbs"],
           "type": "proj"
         }
     }

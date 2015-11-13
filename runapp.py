@@ -1,38 +1,65 @@
 import os
-# import sys
 import sublime
 import sublime_plugin
 
 class RunappCommand(sublime_plugin.WindowCommand):
     def run(self, app = "", args = [], type = ""):
-        filename = self.window.active_view().file_name()
+        # get the string of $FILE$
+        file_s = self.window.active_view().file_name()
+
+        # get the string of $DIR$
+        dir_s = os.path.split(file_s)[0]
+
+        # get the string of $PROJ$
+        data = sublime.active_window().project_data()
+        if data != None:
+            for folder in data['folders']:
+                proj_s = folder['path']
+                break
+
+        # handle the 'type'
         if type == "file":
-            target = filename
+            target = '"'+file_s+'"'
         elif type == "dir":
-            target = os.path.split(filename)[0]
+            target = '"'+dir_s+'"'
         elif type == "proj":
-            data = sublime.active_window().project_data()
-            if data != None:
-                for folder in data['folders']:
-                    target = folder['path']
-                    break
+            if proj_s != None:
+                target = '"'+proj_s+'"'
             else:
                 sublime.error_message('It\'s not a project yet. Please go to "Project->Save Project as..." firstly.')
                 return
+
+        # handle the embedded $var$
         elif type == "none":
             target = ""
+            for i in range(0,len(args)):
+                arg = args[i]
+                arg = arg.replace('$FILE$', '"'+file_s+'"')
+                arg = arg.replace('$DIR$', '"'+dir_s+'"')
+                if proj_s != None:
+                    arg = arg.replace('$PROJ$', '"'+proj_s+'"')
+                args[i] = arg
+
         else:
             sublime.error_message('"type" must be one of "file", "dir", "proj", and "none".')
 
         if target is None:
             return
 
-        import subprocess
+        # invoke the application
+        # import subprocess
         try:
+            # join to one string for os.popen
+            # ? subprocess.Popen can't work with msys_git 2.5.3
+            exec_s = ' '.join([app] + args + [target])
+            # print(exec_s)
+
             if sublime.platform() == 'osx':
-                subprocess.Popen(['open', '-a', app] + args + [target])
+                # subprocess.Popen(['open', '-a', app] + args + [target])
+                os.popen('open -a ' + exec_s)
             else:
-                subprocess.Popen([app] + args + [target]) 
+                # subprocess.Popen([app] + args + [target])
+                os.popen(exec_s)
         except:
             sublime.error_message('Unable to open current file with "' + app + '", check the Console.')
 
@@ -49,11 +76,23 @@ class AddappCommand(sublime_plugin.WindowCommand):
         "caption": "Run: Git",
         "command": "runapp",
         "args":{
-            "app": "C:\\\\Windows\\\\system32\\\\wscript", // application name
-            "args": ["D:\\\\Tools\\\\Git\\\\Git Bash.vbs"], // application arguments
-            "type": "dir" // "dir", "proj", "file", "none"
+            "app": "D:\\\\Tools\\\\Git\\\\git-bash.exe",
+            "args": ["--cd=$DIR$"],
+            "type": "none"
         }
-    }
+
+    },
+
+    {
+        "caption": "Run: Chrome",
+        "command": "runapp",
+        "args":{
+            "app": "C:\\\\Users\\\\lhw\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe",
+            "args": [],
+            "type": "file"
+        }
+
+    },
 ]"""
             open(cmdFile, 'w+', encoding='utf8', newline='').write(str(content))
         sublime.active_window().open_file(cmdFile)
