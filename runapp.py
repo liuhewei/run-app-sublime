@@ -88,7 +88,7 @@ class AddappCommand(sublime_plugin.WindowCommand):
         "caption": "Run: Chrome",
         "command": "runapp",
         "args":{
-            "app": "C:\\\\Users\\\\lhw\\\\AppData\\\\Local\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe",
+            "app": "C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe",
             "args": [],
             "type": "file"
         }
