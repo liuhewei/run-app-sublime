@@ -11,6 +11,7 @@ class RunappCommand(sublime_plugin.WindowCommand):
         dir_s = os.path.split(file_s)[0]
 
         # get the string of $PROJ$
+        proj_s = None
         data = sublime.active_window().project_data()
         if data != None:
             for folder in data['folders']:
@@ -51,7 +52,7 @@ class RunappCommand(sublime_plugin.WindowCommand):
         try:
             # join to one string for os.popen
             # ? subprocess.Popen can't work with msys_git 2.5.3
-            exec_s = ' '.join([app] + args + [target])
+            exec_s = ' '.join(['"'+app+'"'] + args + [target])
             # print(exec_s)
 
             if sublime.platform() == 'osx':
