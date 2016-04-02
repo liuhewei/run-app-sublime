@@ -52,9 +52,9 @@ class RunappCommand(sublime_plugin.WindowCommand):
 
         try:
             if sublime.platform() == 'osx':
-                proc = subprocess.Popen(['open', '-a', app] + args + [target])
+                proc = subprocess.Popen(['open', '-a', app] + args + [target], stdout=subprocess.PIPE)
             elif sublime.platform() == 'linux':
-                proc = subprocess.Popen([app] + args + [target])
+                proc = subprocess.Popen([app] + args + [target], stdout=subprocess.PIPE)
             else:
                 # windows uses string because of CreateProcess()
                 exec_s = ' '.join(['"'+app+'"'] + args + [target])

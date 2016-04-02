@@ -41,7 +41,14 @@ Each application follows:
           // "file" - file name, same as $FILE$
           // "proj" - project directory, same as $PROJ$
           // "none" - nothing: if args use variables, "type" must be "none"
-          "type": ""
+          // default is "none"
+          "type": "",
+
+          // the style of revoking: 
+          // "true" means we don't need wait for the run result
+          // "false" means wait until the run result printed in console
+          // default is "true"
+          "async": "true"
         }
     }
 ```
