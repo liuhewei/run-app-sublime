@@ -3,7 +3,7 @@ import sublime
 import sublime_plugin
 
 class RunappCommand(sublime_plugin.WindowCommand):
-    def run(self, app = "", args = [], type = ""):
+    def run(self, app = "", args = [], type = "", async = "true"):
         # get the string of $FILE$
         file_s = self.window.active_view().file_name()
 
@@ -48,21 +48,28 @@ class RunappCommand(sublime_plugin.WindowCommand):
             return
 
         # invoke the application
-        # import subprocess
-        try:
-            # join to one string for os.popen
-            # ? subprocess.Popen can't work with msys_git 2.5.3
-            exec_s = ' '.join(['"'+app+'"'] + args + [target])
-            # print(exec_s)
+        import subprocess
 
+        try:
             if sublime.platform() == 'osx':
-                # subprocess.Popen(['open', '-a', app] + args + [target])
-                os.popen('open -a ' + exec_s)
+                proc = subprocess.Popen(['open', '-a', app] + args + [target])
+            elif sublime.platform() == 'linux':
+                proc = subprocess.Popen([app] + args + [target])
             else:
-                # subprocess.Popen([app] + args + [target])
-                os.popen(exec_s)
+                # windows uses string because of CreateProcess()
+                exec_s = ' '.join(['"'+app+'"'] + args + [target])
+                proc = subprocess.Popen(exec_s, stdout=subprocess.PIPE)
         except:
-            sublime.error_message('Unable to open current file with "' + app + '", check the Console.')
+            sublime.error_message('Error happens when run: ' + app + ', check the console')
+            print("$ args: ", args)
+            print("$ target: " + target)
+            print("$ type: " + type)
+            print("$ async: " + async)
+
+        if async == "false":
+            # waiting for the app's running
+            print("$ output of " + app + ":\n")
+            print(proc.stdout.read())
 
     def is_enabled(self):
         return True
