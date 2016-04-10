@@ -5,47 +5,48 @@ import time
 import subprocess
 
 class RunappCommand(sublime_plugin.WindowCommand):
-    def run(self, app = "", args = [], type = "", cli = False):
-        # get the string of $FILE$
-        file_s = self.window.active_view().file_name()
+    # def __init__(self, *args):
+    #     self.input = ""
 
-        # get the string of $DIR$
-        dir_s = os.path.split(file_s)[0]
+    def run(self, app="", args=[], type=None, cli=False, input=False):
 
-        # get the string of $PROJ$
-        proj_s = None
-        data = sublime.active_window().project_data()
-        if data != None:
-            for folder in data['folders']:
-                proj_s = folder['path']
-                break
+        target = ""
+        view = None
 
-        # handle the 'type'
-        if type == "file":
-            target = '"'+file_s+'"'
-        elif type == "dir":
-            target = '"'+dir_s+'"'
-        elif type == "proj":
-            if proj_s != None:
-                target = '"'+proj_s+'"'
-            else:
-                sublime.error_message('It\'s not a project yet. Please go to "Project->Save Project as..." firstly.')
-                return
+        if self.window.active_view() != None:
+            view = self.window.active_view()
 
-        # handle the embedded $var$
-        elif type == "none":
-            target = ""
+            file = view.file_name()
+            dir = os.path.split(file)[0]
+            proj = ""
+
+            if not input:
+                # get the target string from "type"
+                if type == "file":
+                    target = '"'+file+'"'
+                elif type == "dir":
+                    target = '"'+dir+'"'
+                elif type == "proj":
+                    data = sublime.active_window().project_data()
+                    if data != None:
+                        # only use the first folder's path
+                        proj = data['folders'][0]['path']
+                        target = '"'+proj+'"'
+                    else:
+                        sublime.error_message('It\'s not a project yet. Please go to "Project->Save Project as..." firstly.')
+                        return
+
+            # handle the embedded $var$ in args
             for i in range(0,len(args)):
                 arg = args[i]
-                arg = arg.replace('$FILE$', '"'+file_s+'"')
-                arg = arg.replace('$DIR$', '"'+dir_s+'"')
-                if proj_s != None:
-                    arg = arg.replace('$PROJ$', '"'+proj_s+'"')
+                arg = arg.replace('$FILE$', '"'+file+'"')
+                arg = arg.replace('$DIR$', '"'+dir+'"')
+                arg = arg.replace('$PROJ$', '"'+proj+'"')
                 args[i] = arg
 
-        else:
-            sublime.error_message('"type" must be one of "file", "dir", "proj", and "none".')
-            return
+            # handle input
+            if input and view.sel() != None:
+                target = view.substr(view.sel()[0])
 
         # invoke the application: gui or cli
         if cli == True:

@@ -36,17 +36,20 @@ Each application follows:
           // variables can be use: $DIR$, $FILE$, $PROJ$
           "args": [""],
 
-          // define what should follow the command:
+          // optional: define what should follow the command
+          // default is None
           // "dir" - file directory, same as $DIR$
           // "file" - file name, same as $FILE$
           // "proj" - project directory, same as $PROJ$
-          // "none"(default) - nothing: 
-          //       if args use variables, "type" must be "none"
           "type": "",
 
-          // Is a command line application or not:
+          // optional: command line application or not
           // default is false
           "cli": true
+
+          // optional: send in selected text as input or not
+          // default is false
+          "input": true
         }
     }
 ```
@@ -79,6 +82,23 @@ Take "git status ." as an example for CLI-app, the original command is:
       "app": "D:\\Tools\\Git\\mingw64\\bin\\git.exe",
       "args": ["status", "."],
       "type": "dir",
+      "cli": true
+    }
+}
+```
+
+Take "go doc <package>" as an example for CLI-app with input, the original command is:
+
+`D:\Tools\Go\bin\go.exe doc fmt.Println` Under selected text `fmt.Println`
+
+```json
+{
+    "caption": "Run: Godoc",
+    "command": "runapp",
+    "args":{
+      "app": "D:\\Tools\\Go\\bin\\go.exe",
+      "args": ["doc"],
+      "input": true,
       "cli": true
     }
 }
