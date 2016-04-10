@@ -5,18 +5,15 @@ import time
 import subprocess
 
 class RunappCommand(sublime_plugin.WindowCommand):
-    # def __init__(self, *args):
-    #     self.input = ""
-
     def run(self, app="", args=[], type=None, cli=False, input=False):
-
         target = ""
-        view = None
+        view = self.window.active_view()
 
-        if self.window.active_view() != None:
-            view = self.window.active_view()
-
+        if view.size() > 0:
             file = view.file_name()
+            if file == None:
+                sublime.error_message("Save the buffer to a local file firstly")
+                return
             dir = os.path.split(file)[0]
             proj = ""
 
@@ -45,10 +42,21 @@ class RunappCommand(sublime_plugin.WindowCommand):
                 args[i] = arg
 
             # handle input
-            if input and view.sel() != None:
-                target = view.substr(view.sel()[0])
+            if input:
+                if view.sel()[0].size() > 0:
+                    target = view.substr(view.sel()[0])
+                else:
+                    self.app, self.args, self.cli = app, args, cli
+                    self.window.show_input_panel("RunApp Input:", "", self.run_app, None, None)
+                    return
 
         # invoke the application: gui or cli
+        self.run_app(target, app, args, cli)
+
+    def run_app(self, target, app="", args=[], cli=False):
+        if app == "":
+            app, args, cli = self.app, self.args, self.cli
+
         if cli == True:
             stdout, rc = self.run_cli(app, args, target)
             if rc == 0:
@@ -114,8 +122,7 @@ class AddappCommand(sublime_plugin.WindowCommand):
         "command": "runapp",
         "args":{
             "app": "D:\\\\Tools\\\\Git\\\\git-bash.exe",
-            "args": ["--cd=$DIR$"],
-            "type": "none"
+            "args": ["--cd=$DIR$"]
         }
 
     },
@@ -128,8 +135,27 @@ class AddappCommand(sublime_plugin.WindowCommand):
             "args": [],
             "type": "file"
         }
-
     },
+
+    {
+        "caption": "Run: Godoc.org",
+        "command": "runapp",
+        "args":{
+          "app": "C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe",
+          "args": ["https://godoc.org/"]
+        }
+    },
+
+    {
+        "caption": "Run: Godoc-local",
+        "command": "runapp",
+        "args":{
+          "app": "D:\\Tools\\Go\\bin\\go.exe",
+          "args": ["doc"],
+          "input": true,
+          "cli": true
+        }
+    }
 ]"""
             open(cmdFile, 'w+', encoding='utf8', newline='').write(str(content))
         sublime.active_window().open_file(cmdFile)
