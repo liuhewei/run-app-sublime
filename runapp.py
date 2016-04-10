@@ -1,9 +1,11 @@
 import os
 import sublime
 import sublime_plugin
+import time
+import subprocess
 
 class RunappCommand(sublime_plugin.WindowCommand):
-    def run(self, app = "", args = [], type = "", async = "true"):
+    def run(self, app = "", args = [], type = "", cli = False):
         # get the string of $FILE$
         file_s = self.window.active_view().file_name()
 
@@ -43,33 +45,59 @@ class RunappCommand(sublime_plugin.WindowCommand):
 
         else:
             sublime.error_message('"type" must be one of "file", "dir", "proj", and "none".')
-
-        if target is None:
             return
 
-        # invoke the application
-        import subprocess
+        # invoke the application: gui or cli
+        if cli == True:
+            stdout, rc = self.run_cli(app, args, target)
+            if rc == 0:
+                output_view = self.window.create_output_panel('run-app-output')
+                output_view.run_command('append', {'characters': stdout})
+                self.window.run_command("show_panel", {"panel": "output.run-app-output"})
+        else:
+            self.run_gui(app, args, target)
 
+    def run_gui(self, app, args, target):
+        # run external gui apps, return nothing
         try:
             if sublime.platform() == 'osx':
-                proc = subprocess.Popen(['open', '-a', app] + args + [target], stdout=subprocess.PIPE)
+                p = subprocess.Popen(['open', '-a', app] + args + [target], stdout=subprocess.PIPE)
             elif sublime.platform() == 'linux':
-                proc = subprocess.Popen([app] + args + [target], stdout=subprocess.PIPE)
+                p = subprocess.Popen([app] + args + [target], stdout=subprocess.PIPE)
             else:
                 # windows uses string because of CreateProcess()
                 exec_s = ' '.join(['"'+app+'"'] + args + [target])
-                proc = subprocess.Popen(exec_s, stdout=subprocess.PIPE)
+                p = subprocess.Popen(exec_s, stdout=subprocess.PIPE)
         except:
             sublime.error_message('Error happens when run: ' + app + ', check the console')
             print("$ args: ", args)
             print("$ target: " + target)
-            print("$ type: " + type)
-            print("$ async: " + async)
 
-        if async == "false":
-            # waiting for the app's running
-            print("$ output of " + app + ":\n")
-            print(proc.stdout.read())
+    def run_cli(self, app, args, target, stdin=None, timeout=5, cwd=None):
+        # run cli commands, return stdout, returncode
+        cmd = [app] + args + [target]
+        try:
+          # Hide popups on Windows
+          si = None
+          if sublime.platform() == "windows":
+            si = subprocess.STARTUPINFO()
+            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+          start = time.time()
+          p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=os.environ.copy(), startupinfo=si, cwd=cwd)
+          stdout, stderr = p.communicate(input=stdin, timeout=timeout)
+          p.wait(timeout=timeout)
+          elapsed = round(time.time() - start)
+          print("process {0} returned ({1}) in {2} seconds".format(app, str(p.returncode), str(elapsed)))
+          stderr = stderr.decode("utf-8")
+          if len(stderr) > 0:
+            print("stderr:\n{0}".format(stderr))
+          return stdout.decode("utf-8"), p.returncode
+
+        except:
+          sublime.error_message('Error happens when run: ' + app + ', check the console')
+          print("$ args: ", args)
+          print("$ target: " + target)
 
     def is_enabled(self):
         return True

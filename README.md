@@ -40,20 +40,18 @@ Each application follows:
           // "dir" - file directory, same as $DIR$
           // "file" - file name, same as $FILE$
           // "proj" - project directory, same as $PROJ$
-          // "none" - nothing: if args use variables, "type" must be "none"
-          // default is "none"
+          // "none"(default) - nothing: 
+          //       if args use variables, "type" must be "none"
           "type": "",
 
-          // the style of revoking: 
-          // "true" means we don't need wait for the run result
-          // "false" means wait until the run result printed in console
-          // default is "true"
-          "async": "true"
+          // Is a command line application or not:
+          // default is false
+          "cli": true
         }
     }
 ```
 
-Take "Git bash on windows" as an example, the original command is:
+Take "Git bash on windows" as an example for GUI-app, the original command is:
 
 `C:/Windows/system32/wscript "D:/Tools/Git/Git Bash.vbs" <directory>`
 
@@ -69,5 +67,19 @@ Take "Git bash on windows" as an example, the original command is:
     }
 ```
 
+Take "git status ." as an example for CLI-app, the original command is:
 
+`D:\Tools\Git\mingw64\bin\git.exe status .` Under current file's directory.
 
+```json
+{
+    "caption": "Run: Git-status",
+    "command": "runapp",
+    "args":{
+      "app": "D:\\Tools\\Git\\mingw64\\bin\\git.exe",
+      "args": ["status", "."],
+      "type": "dir",
+      "cli": true
+    }
+}
+```
