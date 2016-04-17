@@ -1,0 +1,22 @@
+*** Run Applications ***
+
+2016.04.17	v1.1.1
++ add messages.json and CHANGELOG
+
+2016.04.10	v1.1.0
++ support input text to applications
+
+2016.04.10	v1.0.6
++ support cli applications and capture the output
+
+2016.04.02	v1.0.4
++ modify the README to add more examples
+
+2015.11.13	v1.0.2
++ support variables: $File, $Dir, $Proj
+
+2014.12.08	v1.0.1
++ update README to add the original example
+
+2014.12.04	v1.0.0
++ Initial version, support external GUI applications with current File/Dir/Proj
